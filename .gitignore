@@ -1,0 +1,23 @@
+.env
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# dbt artifacts
+dbt_project/target/
+dbt_project/dbt_packages/
+dbt_project/logs/
+
+# Dagster local storage
+.tmp/
+
+# dbt local user config
+dbt_project/.user.yml
+logs/
+
+# macOS
+.DS_Store

@@ -1,0 +1,38 @@
+name: retail_analytics
+version: '1.0.0'
+config-version: 2
+
+profile: snowflake
+
+model-paths:   ["models"]
+analysis-paths: ["analyses"]
+test-paths:    ["tests"]
+seed-paths:    ["seeds"]
+macro-paths:   ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+# ---------------------------------------------------------------------------
+# Model materialization defaults by layer
+# ---------------------------------------------------------------------------
+models:
+  retail_analytics:
+    bronze:
+      +schema: bronze
+      +materialized: incremental
+      +incremental_strategy: merge
+      +on_schema_change: sync_all_columns
+
+    silver:
+      +schema: silver
+      +materialized: incremental
+      +incremental_strategy: merge
+      +on_schema_change: sync_all_columns
+
+    gold:
+      +schema: gold
+      +materialized: incremental
+      +incremental_strategy: merge
+      +on_schema_change: sync_all_columns

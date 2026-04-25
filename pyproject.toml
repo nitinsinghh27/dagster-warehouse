@@ -1,0 +1,25 @@
+[project]
+name = "warehouse_orchestrator"
+version = "1.0.0"
+requires-python = ">=3.9,<3.13"
+dependencies = ["dagster"]
+
+[project.optional-dependencies]
+dev = ["dagster-webserver", "pytest"]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.dagster]
+module_name = "warehouse_orchestrator.definitions"
+project_name = "warehouse_orchestrator"
+
+[tool.setuptools.packages.find]
+exclude = ["warehouse_orchestrator_tests"]
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"

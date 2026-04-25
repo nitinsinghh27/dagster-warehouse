@@ -1,0 +1,9 @@
+dagster==1.11.5
+dagster-dbt==0.27.5
+dagster-snowflake==0.27.5
+dagster-webserver==1.11.5
+dagster_shared==1.11.5
+dbt-snowflake==1.10.0
+python-dotenv==1.1.1
+pandas>=2.0
+sqlglot[c]

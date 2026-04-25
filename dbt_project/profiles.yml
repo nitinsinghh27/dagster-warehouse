@@ -1,0 +1,40 @@
+snowflake:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account:                   "{{ env_var('SNOWFLAKE_ACCOUNT_NAME') }}"
+      user:                      "{{ env_var('SNOWFLAKE_USER_NAME') }}"
+      password:                  "{{ env_var('SNOWFLAKE_USER_PASSWORD') }}"
+      # username_password_mfa caches the Duo token after the first push —
+      # subsequent connections in the same run don't re-prompt.
+      authenticator:             username_password_mfa
+      role:                      "{{ env_var('SNOWFLAKE_ROLE', 'DATA_ENG') }}"
+      warehouse:                 "{{ env_var('SNOWFLAKE_WAREHOUSE', 'TRANSFORM_DEV') }}"
+      database:                  "{{ env_var('SNOWFLAKE_DATABASE', 'NITIN_DAGSTER_POC') }}"
+      schema:                    public   # overridden per-model via generate_schema_name macro
+      threads:                   4
+      connect_retries:           0        # never retry — avoids double Duo prompts
+      connect_timeout:           10       # fail fast so the MFA cache isn't exhausted
+      retry_on_database_errors:  false
+      retry_all:                 false
+      reuse_connections:         true
+      client_session_keep_alive: true
+
+    prod:
+      type: snowflake
+      account:                   "{{ env_var('SNOWFLAKE_ACCOUNT_NAME') }}"
+      user:                      "{{ env_var('SNOWFLAKE_USER_NAME') }}"
+      password:                  "{{ env_var('SNOWFLAKE_USER_PASSWORD') }}"
+      authenticator:             username_password_mfa
+      role:                      "{{ env_var('SNOWFLAKE_ROLE', 'DATA_ENG') }}"
+      warehouse:                 "{{ env_var('SNOWFLAKE_WAREHOUSE', 'TRANSFORM_PROD') }}"
+      database:                  "{{ env_var('SNOWFLAKE_DATABASE', 'NITIN_DAGSTER_POC') }}"
+      schema:                    public
+      threads:                   8
+      connect_retries:           0
+      connect_timeout:           10
+      retry_on_database_errors:  false
+      retry_all:                 false
+      reuse_connections:         false
+      client_session_keep_alive: true

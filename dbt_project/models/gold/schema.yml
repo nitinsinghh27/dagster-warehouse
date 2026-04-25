@@ -1,0 +1,77 @@
+version: 2
+
+models:
+  - name: ra_hourly_sales
+    description: >
+      Retail Analytics hourly sales report.
+      Grain: store × hour × ticket_type × revenue_source × customer_type
+             × customer_visit_type × is_sample × is_promo.
+      Upserted via synth_key (MD5 over all grain columns).
+    columns:
+      - name: synth_key
+        description: MD5 grain key — unique per row.
+        # tests: [not_null, unique]
+
+      - name: org_id
+        # tests: [not_null]
+      - name: store_id
+        # tests: [not_null]
+      - name: analytics_id
+        # tests: [not_null]
+      - name: hour_close
+        # tests: [not_null]
+
+      - name: ticket_type
+        # tests: [not_null]
+      - name: revenue_source
+        # tests: [not_null]
+      - name: customer_type
+        # tests: [not_null]
+
+      - name: customer_visit_type
+        # tests:
+        #   - accepted_values:
+        #       values: ['new', 'returning', 'walk_in']
+
+      - name: is_sample
+        # tests: [not_null]
+      - name: is_promo
+        # tests: [not_null]
+
+      - name: customer_count
+        description: Unique customers in this grain group.
+        # tests:
+        #   - not_null
+        #   - dbt_utils.expression_is_true:
+        #       expression: ">= 0"
+
+      - name: ticket_count
+        description: Distinct tickets in this grain group.
+        # tests:
+        #   - not_null
+        #   - dbt_utils.expression_is_true:
+        #       expression: ">= 0"
+
+      - name: units_sold
+        # tests:
+        #   - dbt_utils.expression_is_true:
+        #       expression: ">= 0"
+
+      - name: gross_sales
+        # tests: [not_null]
+
+      - name: net_sales
+        # tests: [not_null]
+
+      - name: taxes
+        # tests:
+        #   - dbt_utils.expression_is_true:
+        #       expression: ">= 0"
+
+      - name: cost_with_excise
+        # tests:
+        #   - dbt_utils.expression_is_true:
+        #       expression: ">= 0"
+
+      - name: last_sync
+        # tests: [not_null]

@@ -1,0 +1,89 @@
+version: 2
+
+models:
+  - name: ticketline_sales
+    description: >
+      Enriched ticket line items.  Joins ticketline → ticket → tenant and
+      derives is_sample / is_promo from the description field.
+    columns:
+      - name: store_id
+        # tests: [not_null]
+      - name: ticketline_id
+        # tests: [not_null]
+      - name: ticket_id
+        # tests: [not_null]
+      - name: date_close
+        # tests: [not_null]
+
+  - name: ticket_sales
+    description: >
+      Ticket-level aggregation: units_sold, gross_sales, discounts, returns, net_sales.
+    columns:
+      - name: store_id
+        # tests: [not_null]
+      - name: ticket_id
+        # tests: [not_null, unique]
+      - name: date_close
+        # tests: [not_null]
+
+  - name: ticketline_taxes
+    description: Tax events enriched with ticket-level dimensions.
+    columns:
+      - name: store_id
+        # tests: [not_null]
+      - name: tax_log_id
+        # tests: [not_null, unique]
+
+  - name: ticketline_tax_totals
+    description: Ticket-level tax totals (total, excise, sales taxes).
+    columns:
+      - name: store_id
+        # tests: [not_null]
+      - name: ticket_id
+        # tests: [not_null]
+
+  - name: customer_first_tx_timestamp
+    description: First completed-ticket timestamp per customer per store.
+    columns:
+      - name: store_id
+        # tests: [not_null]
+      - name: customer_id
+        # tests: [not_null]
+
+  - name: customer_first_tx
+    description: >
+      Classifies each ticket visit as new / returning / walk_in based on whether
+      the ticket is the customer's first transaction at the store.
+    columns:
+      - name: store_id
+        # tests: [not_null]
+      - name: ticket_id
+        # tests: [not_null, unique]
+      - name: customer_visit_type
+        # tests:
+        #   - accepted_values:
+        #       values: ['new', 'returning', 'walk_in']
+
+  - name: daily_customer_cnt
+    description: Unique customer counts per store per calendar day.
+    columns:
+      - name: store_id
+        # tests: [not_null]
+      - name: sale_date
+        # tests: [not_null]
+
+  - name: invoice_line
+    description: Invoice line costs joined to ticketline_sales for COGS attribution.
+    columns:
+      - name: store_id
+        # tests: [not_null]
+      - name: invoice_line_cost_id
+        # tests: [not_null]
+
+  - name: invoice_fact
+    description: Ticket-level aggregated COGS (cost_with_excise, cost_without_excise, etc.).
+    columns:
+      - name: store_id
+        # tests: [not_null]
+      - name: ticket_id
+        # tests: [not_null]

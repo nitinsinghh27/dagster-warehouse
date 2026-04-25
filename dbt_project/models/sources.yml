@@ -1,0 +1,55 @@
+version: 2
+
+sources:
+  - name: debezium_staging
+    description: >
+      Raw CDC feed from Debezium. POS tables land in POS_STAGING; platform organisation
+      service tables land in their own staging tables in the same schema.
+    database: INGEST
+    schema: DEBEZIUM_STAGING
+    tables:
+      - name: pos_staging
+        description: >
+          Unified CDC staging table. Each row represents one CDC event
+          (insert / update / delete) for any source POS table.
+          RECORD_DATA (VARIANT) holds the full row payload.
+        columns:
+          - name: STORE_ID
+            description: Tenant store identifier.
+          - name: DATABASE_NAME
+            description: Source database name in the POS system.
+          - name: TABLE_NAME
+            description: Source table name — used to route rows to the correct bronze model.
+          - name: SYNC_DATE
+            description: Timestamp when Debezium captured the event.
+          - name: PROCESS_DATE
+            description: Date partition used for incremental load windows.
+          - name: LOAD_DATE
+            description: Timestamp when the row was loaded into Snowflake.
+          - name: DEBEZIUM_OP
+            description: CDC operation type — 'c' create, 'u' update, 'd' delete, 'r' read/snapshot.
+          - name: DELETED
+            description: Boolean soft-delete flag mirrored from Debezium.
+          - name: RECORD_KEY
+            description: Primary-key value of the source row, used as unique_key in bronze.
+          - name: RECORD_DATA
+            description: Full source row serialised as VARIANT JSON.
+          - name: FILENAME
+            description: Source Snowflake stage file name.
+          - name: FILE_ROW_NUMBER
+            description: Row number within the source stage file.
+          - name: FILE_CONTENT_KEY
+            description: Deduplication key for the stage file content.
+          - name: FILE_LAST_MODIFIED
+            description: Last-modified timestamp of the source stage file.
+
+      - name: platform_organization_entity
+        description: >
+          Platform organisation service — one row per store entity (location).
+          ID = store_id, ORGANIZATION_ID = org_id.
+          INTERNAL_IDS (JSON array) contains store_url and external_store_id.
+
+      - name: platform_organization_organization
+        description: >
+          Platform organisation service — one row per organisation (brand/group).
+          ID = org_id, NAME = org_name.

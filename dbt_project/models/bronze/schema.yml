@@ -1,0 +1,67 @@
+version: 2
+
+models:
+  - name: base_pos_ticket
+    description: >
+      POS ticket header (transaction) parsed from Debezium CDC.
+      One row per active ticket, deduplicated to the latest event.
+    columns:
+      - name: store_id
+        # tests: [not_null]
+      - name: ticket_id
+        # tests: [not_null]
+      - name: date_close
+        # tests: [not_null]
+      - name: ticket_type
+        # tests: [not_null]
+
+  - name: base_pos_ticketline
+    description: >
+      POS ticket line items parsed from Debezium CDC.
+      One row per active line item.
+    columns:
+      - name: store_id
+        # tests: [not_null]
+      - name: ticketline_id
+        # tests: [not_null]
+      - name: ticket_id
+        # tests: [not_null]
+
+  - name: base_pos_ticketline_tax_log
+    description: >
+      Per-line tax event log from Debezium.
+      Used to compute line-level and ticket-level tax totals.
+    columns:
+      - name: store_id
+        # tests: [not_null]
+      - name: tax_log_id
+        # tests: [not_null]
+
+  - name: base_inventory
+    description: >
+      Inventory batch records with excise / non-excise cost data.
+    columns:
+      - name: store_id
+        # tests: [not_null]
+      - name: inventory_id
+        # tests: [not_null]
+
+  - name: base_invoice_line_cost
+    description: >
+      Per-invoice-line cost breakdown used to compute COGS metrics.
+    columns:
+      - name: store_id
+        # tests: [not_null]
+      - name: invoice_line_cost_id
+        # tests: [not_null]
+
+  - name: tenant_stores
+    description: >
+      Tenant / store dimension providing org_id, analytics_id, and display metadata.
+    columns:
+      - name: store_id
+        # tests: [not_null, unique]
+      - name: org_id
+        # tests: [not_null]
+      - name: analytics_id
+        # tests: [not_null]
